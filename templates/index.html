@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,435;1,435&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="display">
+        <div class="title">
+            <h1 id="h1">Movie Recommender</h1>
+        </div>
+        <div class="form">
+            <form method="post" action="/" id="movieForm">
+                <label for="movie_name"></label>
+                <input type="text" name="movie_name" id="movie_input">
+                <input type="submit" value="Recommend" id="recommend_btn">
+            </form>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    {% if recommendations and recommendations is not none and not recommendations.empty %}
+
+
+    <div class="recommendations" id="recommendations">
+
+        {% for movie in recommendations%}
+        <div class="card">
+            <div class="overview">
+                <p class="ovw-head">Overview</p>
+                {% if movie['overview'] and movie['name']|string != ""%}
+                    <p class="synopsis">{{ movie['overview'] }}</p>
+                {% endif %}
+
+                {% if movie['link'] and movie['link']|string != ""%}
+                <a href="https://www.imdb.com/title/{{ movie['link'] }}/"><p>Know more</p></a>
+                {% endif %}
+
+            </div>
+            <div class="img">
+                {% if movie['poster_path'] and movie['poster_path']|string != "" %}
+                <img class="poster" src="https://image.tmdb.org/t/p/w500{{ movie['poster_path'] }}" alt="Movie Poster">
+                {% endif %}
+                <img class="arrow" src="/static/kisspng-bullet-computer-icons-arrow-next-button-5ac96c339039e9.1812823715231498755908.png" alt="">
+                
+
+
+            </div>
+            <div class="card_body">
+                <div class="heading">
+                    {% if movie['name'] and movie['name']|string != "" %}
+                        <h2 class="name">{{ movie['name'] }}</h2>
+                    {% endif %}
+                    
+                    {% if movie['ratings'] and movie['ratings']|string != "" %}
+                        <p class="rating">{{ movie['ratings'] }}</p>
+                    {% endif %}
+
+                    {% if movie['release_date'] and movie['release_date']|string != ""%}
+                        <p class="date">{{ movie['release_date'] }}</p>
+                    {% endif %}
+
+                </div>
+                <div class="genres">
+                {% if movie['genres']  and not movie['genres'].empty%}
+                    {% for genre in movie['genres']%}
+                        <span>{{ genre }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+
+
+                {% if movie['gpt_response'] and movie['gpt_response']|string != ""%}
+                    <p class="gpt">{{ movie['gpt_response'] }}</p>
+                {% endif %}
+
+
+            </div>
+        </div>
+        {% endfor%}
+
+    </div>
+    {% endif %}
+
+    {% if message%}
+    <div class="movienotfound" id="notfound">
+        <div class="errormsg">
+            <img class = "notfoundImg" src="/static/notfound.png" alt="">
+            <p>{{ message }}</p>
+        </div>
+    </div>
+    {% endif%}
+</body>
+
+<!-- <script src="/static/script.js"></script> -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+</html>
